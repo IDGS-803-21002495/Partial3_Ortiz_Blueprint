@@ -1,6 +1,6 @@
 from wtforms import Form
 
-from wtforms import StringField, validators
+from wtforms import StringField, validators, EmailField, PasswordField
 
 class ClienteForm(Form):
     Nombre = StringField('Nombre',[
@@ -22,4 +22,12 @@ class ClienteForm(Form):
     Telefono = StringField('Telefono',[
         validators.DataRequired(message='Campo requerido'),
         validators.Length(min=5, max=10, message='Ingrese un número telefonico válido')
+    ])
+    Contraseña = PasswordField('Contraseña',[
+        validators.DataRequired(message='Campo requerido'),
+        validators.Length(min=10, max=70, message='Ingrese una contraseña válida')
+    ])
+    Email = EmailField('Email',[
+        validators.DataRequired(message='Campo requerido'),
+        validators.Length(min=15, max=70, message='Ingrese un correo electronico válido')
     ])

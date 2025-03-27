@@ -30,6 +30,16 @@
             </div>
         </div>
 
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="mb-5">
+                {{ macros.camposNuevos(form.Email, class="bg-white border border-gray-200 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-50 dark:border-gray-300 dark:placeholder-gray-500 dark:text-gray-900 dark:focus:ring-blue-500 dark:focus:border-blue-500") }}
+            </div>
+    
+            <div class="mb-5">
+                {{ macros.camposNuevos(form.Contraseña, class="bg-white border border-gray-200 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-50 dark:border-gray-300 dark:placeholder-gray-500 dark:text-gray-900 dark:focus:ring-blue-500 dark:focus:border-blue-500") }}
+            </div>
+        </div>
+
         <!-- Botón de Envío -->
         <div class="mt-6 text-center">
             <button type="submit"

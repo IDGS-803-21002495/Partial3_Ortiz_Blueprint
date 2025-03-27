@@ -1,9 +1,11 @@
 from flask import render_template, request, redirect, url_for, flash
-from flask_login import login_required
+from flask_login import login_required, current_user
 from forms.clientes_forms import ClienteForm
 from models import db
+from werkzeug.security import generate_password_hash
 from .roles import require_role
 from models.cliente import Cliente
+from models.usuario import Usuario
 
 from flask import Blueprint
 
@@ -18,8 +20,6 @@ def todos():
     return render_template('clientes.html', form = create_form, clientes = clientes)
 
 @cliente_bp.route('/guardar', methods=['GET', 'POST'])
-@require_role(['admin', 'empleado'])
-@login_required
 def guardar():
     create_form = ClienteForm(request.form)
     
@@ -29,8 +29,10 @@ def guardar():
         ape_materno = create_form.Apellido_materno.data
         direccion = create_form.Direccion.data
         telefono = create_form.Telefono.data
+        email = create_form.Email.data
+        password = create_form.Contraseña.data
 
-        # crear instancia del objeto 
+        # Crear instancia del objeto Cliente
         cli = Cliente(
             nombre = nombre,
             ape_paterno = ape_paterno,
@@ -39,13 +41,29 @@ def guardar():
             telefono = telefono
         )
 
-        db.session.add(cli)
-        db.session.commit()
-        # mostrar mensaje informando el total
-        flash(f"Cliente registrado correctamente", "success")
-        return redirect(url_for('clientes.todos'))
+        # Generar el hash de la contraseña
+        password_hash = generate_password_hash(password)
+        
+        nombre_completo = nombre + ' ' + ape_paterno + ' ' + ape_materno
 
-    return render_template('detalles_cliente.html', form = create_form)
+        # Crear instancia del objeto Usuario
+        user = Usuario(
+            nombre = nombre_completo,
+            username = nombre,
+            password = password_hash,
+            email = email,
+            rol = 'cliente'
+        )
+
+        # Agregar a la base de datos
+        db.session.add(cli)
+        db.session.add(user)
+        db.session.commit()
+
+        flash("Cliente registrado correctamente. Por favor, inicia sesión.", "success")
+        return redirect(url_for('auth.login'))  # Redirige al login si es cliente
+
+    return render_template('detalles_cliente.html', form=create_form)
 
 @cliente_bp.route('/eliminar/<int:id>', methods=['GET', 'POST'])
 @require_role(['admin', 'empleado'])
@@ -58,10 +76,10 @@ def eliminar(id):
     return redirect(url_for('clientes.todos'))
 
 @cliente_bp.route('/actualizar/<int:id>', methods=['GET', 'POST'])
-@require_role(['admin', 'empleado'])
+@require_role(['admin', 'empleado','cliente'])
 @login_required
 def actualizar(id):
-    cliente = Cliente.query.get_or_404(id)  
+    cliente = Cliente.query.get_or_404(id)
     create_form = ClienteForm(request.form) 
 
     if request.method == 'POST' and create_form.validate():

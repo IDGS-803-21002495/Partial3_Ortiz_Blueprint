@@ -21,6 +21,5 @@ class UsuarioForm(Form):
     ])
     Rol = SelectField('Rol', choices=[
         ('admin', 'Administrador'),
-        ('empleado', 'Empleado'),
-        ('cliente', 'Cliente')
+        ('empleado', 'Empleado')
     ], validators=[validators.DataRequired(message='Seleccione un rol')])

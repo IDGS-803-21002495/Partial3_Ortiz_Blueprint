@@ -13,7 +13,7 @@ usuario_bp = Blueprint('usuarios', __name__, url_prefix='/usuarios')
 @login_required
 def todos():
     create_form = UsuarioForm(request.form)
-    usuarios = Usuario.query.filter()
+    usuarios = Usuario.query.filter(Usuario.rol != 'cliente').all()
     return render_template('usuarios.html', form = create_form, usuarios = usuarios)
 
 @usuario_bp.route('/guardar', methods=['GET', 'POST'])
@@ -43,7 +43,7 @@ def guardar():
         db.session.add(user)
         db.session.commit()
         # mostrar mensaje informando el total
-        flash(f"Usuario registrado correctamente", "success")
+        flash("Usuario registrado correctamente")
         return redirect(url_for('usuarios.todos'))
 
     return render_template('detalles_usuario.html', form = create_form)

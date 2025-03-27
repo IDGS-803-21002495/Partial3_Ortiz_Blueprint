@@ -40,7 +40,7 @@ def guardar():
         db.session.add(prov)
         db.session.commit()
         # mostrar mensaje informando el total
-        flash(f"Proveedor registrado correctamente", "success")
+        flash("Proveedor registrado correctamente")
         return redirect(url_for('proveedores.todos'))
 
     return render_template('detalles_proveedor.html', form = create_form)
@@ -58,8 +58,8 @@ def eliminar(id):
 @proveedores_bp.route('/actualizar/<int:id>', methods=['GET', 'POST'])
 @login_required
 def actualizar(id):
-    proveedor = Proveedor.query.get_or_404(id)  
-    create_form = ProveedorForm(request.form) 
+    proveedor = Proveedor.query.get_or_404(id)
+    create_form = ProveedorForm(request.form)
 
     if request.method == 'POST' and create_form.validate():
         proveedor.nombre = create_form.Nombre.data
@@ -68,7 +68,7 @@ def actualizar(id):
         proveedor.email = create_form.Email.data
 
         db.session.commit()
-        flash(f"Proveedpr actualizado correctamente", "success")
+        flash("Proveedpr actualizado correctamente")
 
         return redirect(url_for('proveedores.todos'))
 
